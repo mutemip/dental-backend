@@ -2,6 +2,31 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from dentalApp.models import Clinic, Doctor, Patient, Visit, Appointment, Affiliation
 from .serializers import ClinicSerializer, DoctorSerializer, PatientSerializer, VisitSerializer, AppointmentSerializer, AffiliationSerializer
+from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import login
+
+# Login ViewSet
+class LoginViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
+    def create(self, request):
+        """
+        Handle login requests with session-based authentication.
+        """
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        # Authenticate the user with email and password
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            # Log the user in and create a session
+            login(request, user)
+            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
 
 # Clinic ViewSet
 class ClinicViewSet(viewsets.ModelViewSet):
