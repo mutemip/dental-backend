@@ -101,6 +101,9 @@ class Patient(models.Model):
     def next_appointment_doctor(self):
         next_appointment = self.appointments.filter(date__gte=timezone.now()).order_by('date').first()
         return next_appointment.doctor if next_appointment else None
+    
+    def next_appointment(self):
+        return self.appointments.filter(date__gte=timezone.now()).order_by('date').first()
 
     def __str__(self):
         return self.name

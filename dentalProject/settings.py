@@ -114,6 +114,25 @@ REST_FRAMEWORK = {
     ],
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Adjust with your React application's URL
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "Accept",
+    "Authorization",
+    "Content-Type",
+]
+
 
 
 # Internationalization

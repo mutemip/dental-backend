@@ -1,19 +1,22 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from dentalApp.models import (
-    Clinic, Doctor, 
-    Patient, Visit, 
-    Appointment, Affiliation
-)
-from .serializers import (
-    ClinicSerializer, DoctorSerializer, 
-    PatientSerializer, VisitSerializer, 
-    AppointmentSerializer, AffiliationSerializer
-)
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login
+from dentalApp.models import (
+    Clinic, Doctor, 
+    Patient, Visit, 
+    Appointment, Affiliation
+    )
+from .serializers import (
+    ClinicSerializer, DoctorSerializer, 
+    PatientSerializer, VisitSerializer, 
+    AppointmentSerializer, AffiliationSerializer,
+    AffiliatedDoctorSerializer, AffiliatedClinicSerializer,
+    PatientVisitSerializer
+    )
 
 # Login ViewSet
 class LoginViewSet(viewsets.ViewSet):
@@ -57,12 +60,23 @@ class ClinicViewSet(viewsets.ModelViewSet):
         clinic = self.get_object()
         serializer = self.get_serializer(clinic)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def affiliated_doctors(self, request, pk=None):
+        """
+        List all doctors affiliated with a specific clinic, including their office address and working schedule.
+        """
+        clinic = self.get_object()  # Get the clinic instance
+        affiliations = Affiliation.objects.filter(clinic=clinic)  # Get all affiliations for this clinic
+        serializer = AffiliatedDoctorSerializer(affiliations, many=True)  # Serialize the affiliations
+        return Response(serializer.data)
 
 
 # Doctor ViewSet
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
+    permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
         """
@@ -79,12 +93,34 @@ class DoctorViewSet(viewsets.ModelViewSet):
         doctor = self.get_object()
         serializer = self.get_serializer(doctor)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def affiliated_clinics(self, request, pk=None):
+        """
+        List all clinics affiliated with a specific doctor, including office address and working schedule.
+        """
+        doctor = self.get_object()  # Get the doctor instance
+        affiliations = Affiliation.objects.filter(doctor=doctor)  # Get all affiliations for this doctor
+        serializer = AffiliatedClinicSerializer(affiliations, many=True)  # Serialize the affiliations
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def affiliated_patients(self, request, pk=None):
+        """
+        List all patients affiliated with a specific doctor.
+        """
+        doctor = self.get_object()  # Get the doctor instance
+        # Fetch all patients associated with the doctor via the Visit model
+        patients = Patient.objects.filter(visits__doctor=doctor).distinct()
+        serializer = PatientSerializer(patients, many=True)
+        return Response(serializer.data)
 
 
 # Patient ViewSet
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
+    permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
         """
@@ -101,12 +137,23 @@ class PatientViewSet(viewsets.ModelViewSet):
         patient = self.get_object()
         serializer = self.get_serializer(patient)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def visits(self, request, pk=None):
+        """
+        List all visits for a specific patient.
+        """
+        patient = self.get_object()  # Get the patient instance
+        visits = Visit.objects.filter(patient=patient)  # Get all visits for this patient
+        serializer = PatientVisitSerializer(visits, many=True)  # Serialize the visits
+        return Response(serializer.data)
 
 
 # Visit ViewSet
 class VisitViewSet(viewsets.ModelViewSet):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
+    permission_classes = [IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         """
@@ -123,6 +170,7 @@ class VisitViewSet(viewsets.ModelViewSet):
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
+    permission_classes = [IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         """
@@ -139,6 +187,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 class AffiliationViewSet(viewsets.ModelViewSet):
     queryset = Affiliation.objects.all()
     serializer_class = AffiliationSerializer
+    permission_classes = [IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         """
