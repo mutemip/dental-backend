@@ -1,9 +1,17 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from dentalApp.models import Clinic, Doctor, Patient, Visit, Appointment, Affiliation
-from .serializers import ClinicSerializer, DoctorSerializer, PatientSerializer, VisitSerializer, AppointmentSerializer, AffiliationSerializer
+from dentalApp.models import (
+    Clinic, Doctor, 
+    Patient, Visit, 
+    Appointment, Affiliation
+)
+from .serializers import (
+    ClinicSerializer, DoctorSerializer, 
+    PatientSerializer, VisitSerializer, 
+    AppointmentSerializer, AffiliationSerializer
+)
 from django.contrib.auth import authenticate
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login
 
@@ -32,6 +40,7 @@ class LoginViewSet(viewsets.ViewSet):
 class ClinicViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer
+    permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
         """
