@@ -19,12 +19,19 @@ from .serializers import (
     )
 
 # Login ViewSet
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
+
+
 class LoginViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Allow anyone to access this view
 
     def create(self, request):
         """
-        Handle login requests with session-based authentication.
+        Handle login requests and return JWT token if credentials are valid.
         """
         email = request.data.get('email')
         password = request.data.get('password')
@@ -33,11 +40,15 @@ class LoginViewSet(viewsets.ViewSet):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            # Log the user in and create a session
-            login(request, user)
-            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+            # Generate JWT token
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 # Clinic ViewSet
 class ClinicViewSet(viewsets.ModelViewSet):

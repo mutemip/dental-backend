@@ -18,12 +18,12 @@ GENDER = {
 
 
 class Clinic(models.Model):
-    name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)
+    name = models.CharField(max_length=255, unique=True)
+    phone_number = models.CharField(max_length=15, unique=True)
     address = models.TextField()
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
 
     def affiliated_doctors_count(self):
         return Doctor.objects.filter(clinics=self).count()
@@ -38,8 +38,8 @@ class Clinic(models.Model):
 class Doctor(models.Model):
     npi = models.CharField(max_length=20, unique=True)  # National Provider Identifier
     name = models.CharField(max_length=255)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=15, unique=True)
     specialties = models.CharField(
         max_length=50,
         choices=PROCEDURES,
@@ -72,8 +72,8 @@ class Patient(models.Model):
     name = models.CharField(max_length=255)
     date_of_birth = models.DateField()
     address = models.TextField()
-    phone_number = models.CharField(max_length=15)
-    ssn_no = models.CharField(max_length=4)
+    phone_number = models.CharField(max_length=15, unique=True)
+    ssn_no = models.CharField(max_length=4, unique=True)
     gender = models.CharField(
         max_length=50,
         choices=GENDER, 
