@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from dentalApp.api.views import get_procedures, get_patients, get_doctors, get_clinics
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('dentalApp.api.urls'))
+    path('api/', include('dentalApp.api.urls')),
+    path('api/procedures/', get_procedures, name='get_procedures'),
+    path('api/patients/', get_patients, name='get_patients'),
+    path('api/doctors/', get_doctors, name='get_doctors'),
+    path('api/clinics/', get_clinics, name='get_clinics'),
 ]

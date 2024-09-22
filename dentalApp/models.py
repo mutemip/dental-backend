@@ -2,19 +2,19 @@ from django.db import models
 from django.utils import timezone
 
 
-PROCEDURES = {
+PROCEDURES = [
     ('cleaning', "Cleaning"),
     ('filling', 'Filling'),
     ('root canal', 'Root Canal'),
     ('crown', 'Crown'),
     ('teeth whitening', 'Teeth Whitening')
-}
+]
 
-GENDER = {
+GENDER = [
     ('female', 'Female'),
     ('male', 'Male'),
     ('other', 'Other')
-}
+]
 
 
 class Clinic(models.Model):

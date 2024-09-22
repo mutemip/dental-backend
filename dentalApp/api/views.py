@@ -17,6 +17,37 @@ from .serializers import (
     AffiliatedDoctorSerializer, AffiliatedClinicSerializer,
     PatientVisitSerializer
     )
+from rest_framework.decorators import api_view
+
+PROCEDURES = [
+    ('cleaning', 'Cleaning'),
+    ('filling', 'Filling'),
+    ('root canal', 'Root Canal'),
+    ('crown', 'Crown'),
+    ('teeth whitening', 'Teeth Whitening'),
+]
+
+@api_view(['GET'])
+def get_procedures(request):
+    return Response(PROCEDURES)
+
+@api_view(['GET'])
+def get_patients(request):
+    patients = Patient.objects.all()
+    serializer = PatientSerializer(patients, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_doctors(request):
+    doctors = Doctor.objects.all()
+    serializer = DoctorSerializer(doctors, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_clinics(request):
+    clinics = Clinic.objects.all()
+    serializer = ClinicSerializer(clinics, many=True)
+    return Response(serializer.data)
 
 # Login ViewSet
 class LoginViewSet(viewsets.ViewSet):

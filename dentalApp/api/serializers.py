@@ -112,7 +112,7 @@ class VisitSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['patient', 'doctor', 'clinic', 'procedure', 'date', 'date_booked']
+        fields = ['id', 'patient', 'doctor', 'clinic', 'procedure', 'date', 'date_booked']
         extra_kwargs = {
             'patient': {'required': True},
             'doctor': {'required': True},
