@@ -64,7 +64,7 @@
     PATCH,
     DELETE
     ```
- - Use Postman collection file for endpoints setup: <>
+ - Use Postman collection file for endpoints setup: <https://github.com/mutemip/dental-backend/blob/master/BrightBackend.postman_collection.json>
 
  # Key Features
    - Login endpoint
