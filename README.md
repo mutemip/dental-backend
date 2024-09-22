@@ -10,7 +10,11 @@
 - Clone the project repo: `git clone git@github.com:mutemip/dental-backend.git`
 - Navigate into project folder using: `cd dental-backend`
 - Project structure:
-    
+
+
+    ![alt text](https://github.com/mutemip/dental-backend/blob/master/screens/structure.png?raw=true)
+
+
 - Install project requirement libraries: `pip install -r requirements.txt`
 - Ensure you setup your postgres database and create a `.env` file. Follow `.env.example`
 
@@ -49,15 +53,9 @@
 
 ## Available REST API Endpoints
 
-    {
-        "clinics": "http://127.0.0.1:8000/api/clinics/",
-        "doctors": "http://127.0.0.1:8000/api/doctors/",
-        "patients": "http://127.0.0.1:8000/api/patients/",
-        "visits": "http://127.0.0.1:8000/api/visits/",
-        "appointments": "http://127.0.0.1:8000/api/appointments/",
-        "affiliations": "http://127.0.0.1:8000/api/affiliations/",
-        "login": "http://127.0.0.1:8000/api/login/"
-    }
+![alt text](https://github.com/mutemip/dental-backend/blob/master/screens/endpoints.png?raw=true)
+
+
  - All endpoints have necessary  ``HTTP Methods``
     ```
     GET,
@@ -83,3 +81,10 @@
     - Endpoint: `http://127.0.0.1:8000/api/visits/`
   - Ability to add, update, view details and delete appointments details. Enables tracking patients appointments with doctors.
     - Endpoint: `http://127.0.0.1:8000/api/appointments/`
+
+ - Clinic-Doctor Affiliations: `http://127.0.0.1:8000/clinics/{clinic_id}/affiliated doctors`
+ - Doctor-Clinic Affiliations: `http://127.0.0.1:8000/doctors/{doctor_id}/affiliated_clinics`
+ - Doctor-patients affiliations: `http://127.0.0.1:8000/doctors/{doctor_id}/affiliated_patients`
+ - Patient vists: `http://127.0.0.1:8000/patients/{patient_id}/visits`
+
+ There is room for improvement.
